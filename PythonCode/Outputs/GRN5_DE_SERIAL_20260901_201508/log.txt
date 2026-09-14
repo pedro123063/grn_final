@@ -1,0 +1,13 @@
+2026-09-01 20:15:08,368 | INFO | Starting execution - Serial
+2026-09-01 20:15:08,368 | INFO | Running with seed=0, solver=ODEINT, error=MSE
+2026-09-01 20:15:08,369 | ERROR | Error running seed=0, solver=ODEINT, error=MSE: name 'polish' is not defined, traceback=Traceback (most recent call last):
+  File "c:\Users\Pedro\faculdade\IniciacaoCientifica\rep\Bolsa-GRN-Performance\PythonCode\Modules\Handlers.py", line 94, in run_single
+    method = self.method_cls(model=self.model, **self.kwargs)
+  File "c:\Users\Pedro\faculdade\IniciacaoCientifica\rep\Bolsa-GRN-Performance\PythonCode\Modules\Methods.py", line 192, in __init__
+    self.polish = polish
+                  ^^^^^^
+NameError: name 'polish' is not defined
+
+2026-09-01 20:15:08,371 | INFO | Results saved to ../../Outputs/GRN5_DE_SERIAL_20260901_201508\results.csv
+2026-09-01 20:15:08,373 | INFO | Results saved to ../../Outputs/GRN5_DE_SERIAL_20260901_201508\results.csv
+2026-09-01 20:15:08,373 | INFO | Execution finished in 0.00 seconds.

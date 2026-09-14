@@ -1,0 +1,7 @@
+2026-09-01 20:15:55,815 | INFO | Starting execution - Serial
+2026-09-01 20:15:55,815 | INFO | Running with seed=0, solver=ODEINT, error=MSE
+2026-09-01 20:15:55,815 | INFO | Starting execution for DE: Solver=ODEINT, Error=MSE, Seed=0
+2026-09-01 20:16:33,973 | INFO | Execution finished for solver: ODEINT, seed: 0, error: MSE in 38.15 seconds.
+2026-09-01 20:16:33,975 | INFO | Results saved to ../../Outputs/GRN5_DE_SERIAL_20260901_201555\results.csv
+2026-09-01 20:16:33,977 | INFO | Results saved to ../../Outputs/GRN5_DE_SERIAL_20260901_201555\results.csv
+2026-09-01 20:16:33,977 | INFO | Execution finished in 38.16 seconds.

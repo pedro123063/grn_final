@@ -132,6 +132,17 @@ class Model:
         )
     
 class ModelWrapper:
+
+    @staticmethod
+    def system_grn5(t, y, ind, equation,labels):
+        vals = [Solvers.norm_hardcoded(val, ind.model.max_data[label]) for val, label in zip(y, labels)]
+        dA = equation.full_eq(vals, 'A', 'E')
+        dB = equation.full_eq(vals, 'B', 'A')
+        dC = equation.full_eq(vals, 'C', 'B')
+        dD = equation.full_eq(vals, 'D', 'C')
+        dE = equation.complex_eqs(vals, 'E', [['+B', '+D'], ['+D', '+E']])
+
+        return [dA, dB, dC, dD, dE]
     
     @staticmethod
     def GRN5(train_percentage, excluded_coeffs={}):
@@ -181,7 +192,7 @@ class ModelWrapper:
 
             return [dA, dB, dC, dD, dE]
             
-        return Model(coeffs=coeffs, bounds=bounds, system=system, labels=labels, datapath=datapath, name='GRN5', train_percentage=train_percentage, excluded_coeffs=excluded_coeffs)
+        return Model(coeffs=coeffs, bounds=bounds, system=ModelWrapper.system_grn5, labels=labels, datapath=datapath, name='GRN5', train_percentage=train_percentage, excluded_coeffs=excluded_coeffs,)
     
     
     @staticmethod

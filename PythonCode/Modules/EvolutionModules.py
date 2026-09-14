@@ -62,7 +62,6 @@ class Individual:
             #print("!1")
             sol = odeint(
                 self.model.system,
-                # lambda y, t: self.model.system(t, y, self, self.equation),  # Wrap system for odeint (t first)
                 initial_conditions,
                 t_eval,
                 args=(self, self.equation),

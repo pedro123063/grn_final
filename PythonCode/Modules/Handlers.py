@@ -45,7 +45,7 @@ class ExecutionHandler:
 
         return logger
 
-    def run_serial(self):
+    def run_serial(self,parallel):
         results = []
 
         for seed in self.seeds:
@@ -55,7 +55,7 @@ class ExecutionHandler:
                     print(f"Running with seed={seed}, solver={solver}, error={error}")
                     print(f"setando seed: {seed}")
                     np.random.seed(seed)
-                    result = self.run_single(seed, solver, error)
+                    result = self.run_single(seed, solver, error,parallel)
                     results.append(result)
                     self.save_results(results)
 
@@ -89,7 +89,7 @@ class ExecutionHandler:
         
         self.save_results(results)
 
-    def run_single(self, seed, solver, error):
+    def run_single(self, seed, solver, error,parallel):
         try:
             method = self.method_cls(model=self.model, **self.kwargs)
             result = method.run(
@@ -100,6 +100,7 @@ class ExecutionHandler:
                 error=error,
                 solver=solver,
                 verbose=True
+                ,parallel=parallel
             )
             result.update({
                 'model': self.model.name,
@@ -142,13 +143,15 @@ class ExecutionHandler:
         
         start = time.time()
         
-        if self.parallel:
-            self.logger.info(f"Starting execution - Parallel")
-            self.run_parallel()
-        else:
-            self.logger.info(f"Starting execution - Serial")
-            self.run_serial()
-            
+        # if self.parallel:
+        #     self.logger.info(f"Starting execution - Parallel")
+        #     self.run_parallel()
+        # else:
+        #     self.logger.info(f"Starting execution - Serial")
+        #     self.run_serial()
+        self.logger.info(f"Starting execution - Serial")
+        self.run_serial(self.parallel)
+
         self.logger.info(f"Execution finished in {time.time() - start:.2f} seconds.")
         
         

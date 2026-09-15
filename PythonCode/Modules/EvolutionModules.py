@@ -64,7 +64,7 @@ class Individual:
                 self.model.system,
                 initial_conditions,
                 t_eval,
-                args=(self, self.equation),
+                args=(self, self.equation,self.model.labels),
                 tfirst=True,  # Important: tells odeint the function is (t, y) instead of (y, t)
                 hmin=0.001
             )
@@ -78,7 +78,7 @@ class Individual:
                 initial_conditions,
                 method=solver,
                 t_eval=t_eval,
-                args=(self, self.equation),
+                args=(self, self.equation,self.model.labels),
                 min_step=0.001
             ).y
     

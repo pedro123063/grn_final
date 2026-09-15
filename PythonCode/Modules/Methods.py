@@ -29,14 +29,14 @@ class Method:
     def __init__(self):
         pass
 
-    def run(self, logging, filepath, gens=5000, seed=None, error='SQUARED', solver='RK45', verbose=False, plot_best_ind=False):
+    def run(self, logging, filepath, gens=5000, seed=None, error='SQUARED', solver='RK45', verbose=False, plot_best_ind=False,parallel=False):
         logging.info(f"Starting execution for {self.__class__.__name__}: Solver={solver}, Error={error}, Seed={seed}")
         
         
         start_time = time.time()
 
         try:
-            best_ind = self.execute(logging=logging, solver=solver, seed=seed, error=error, gens=gens, verbose=verbose)
+            best_ind = self.execute(logging=logging, solver=solver, seed=seed, error=error, gens=gens, verbose=verbose,parallel=parallel)
 
         except Exception as e:
             logging.error(f"Unexpected error: {e}", exc_info=True)
@@ -191,17 +191,22 @@ class DE(Method):
         self.recombination = recombination 
         self.polish = polish 
         self.disp = disp 
-
-    def execute(self, logging, solver, error, seed, gens=5000, verbose=False):
-
-        def objective_function(params):
-            ind = Individual.list_to_ind(params, self.model)
+    @staticmethod
+    def objective_function_DE(params,solver,error,model):
+            ind = Individual.list_to_ind(params,model)
             ind.calculate_fitness(error=error,solver=solver)
             return ind.fitness
-    
+
+    def execute(self, logging, solver, error, seed, gens=5000, verbose=False,parallel=False):
+        workers_aux=1
+        if parallel:
+            workers_aux=-1
+            print("\n\n stalingrado \n\n")
+        args_aux=(solver,error,self.model)
         result = differential_evolution(
-            objective_function,
+            DE.objective_function_DE,
             self.model.bounds_list(),
+            args=args_aux,
             strategy='best1bin',
             maxiter=gens,
             popsize=15,
@@ -209,8 +214,9 @@ class DE(Method):
             recombination=0.75,
             seed=seed,
             polish=True,
-            disp=True
+            disp=False
             ,updating='deferred'
+            ,workers=workers_aux
         )
         
         return Individual.list_to_ind(result.x, self.model)

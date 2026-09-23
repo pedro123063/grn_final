@@ -201,7 +201,7 @@ class DE(Method):
         workers_aux=1
         if parallel:
             workers_aux=-1
-            print("\n\n stalingrado \n\n")
+
         args_aux=(solver,error,self.model)
         result = differential_evolution(
             DE.objective_function_DE,

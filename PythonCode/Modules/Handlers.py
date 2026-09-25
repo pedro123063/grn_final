@@ -12,7 +12,7 @@ from Modules.Plotters import Plotter
 import traceback
 
 class ExecutionHandler:
-    def __init__(self, model, method_class, seeds, solvers, errors, generations, output_path=None, parallel=False, **kwargs):
+    def __init__(self, model, method_class, seeds, solvers, errors, generations, output_path=None, parallel=False,desired_gens=None, **kwargs):
         self.model = model
         self.method_cls = method_class  # Classe do método
         self.method_name = method_class.__name__.upper()
@@ -23,7 +23,7 @@ class ExecutionHandler:
         self.output_dir = output_path if output_path else "../../Outputs/"
         self.parallel = parallel
         self.params = kwargs
-        
+        self.desired_gens=desired_gens
         self.kwargs = kwargs
     
     @property
@@ -91,7 +91,7 @@ class ExecutionHandler:
 
     def run_single(self, seed, solver, error,parallel):
         try:
-            method = self.method_cls(model=self.model, **self.kwargs)
+            method = self.method_cls(model=self.model,evalPoints=self.desired_gens, **self.kwargs)
             result = method.run(
                 logging=self.logger,
                 filepath=self.run_path,

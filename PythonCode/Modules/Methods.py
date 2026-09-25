@@ -29,10 +29,11 @@ class Method:
     def __init__(self):
         pass
 
-    def run(self, logging, filepath, gens=5000, seed=None, error='SQUARED', solver='RK45', verbose=False, plot_best_ind=False,parallel=False):
+    def run(self, logging, filepath, gens=5000, seed=None, error='SQUARED', solver='RK45', verbose=False, plot_best_ind=False,parallel=1):
         logging.info(f"Starting execution for {self.__class__.__name__}: Solver={solver}, Error={error}, Seed={seed}")
         
-        
+        logging.info(f"comeco de execucao{time.strftime("%d/%m/%Y %H:%M:%S")}")
+        logging.info(f"numero de cores: {parallel} | numero de geracoes : {gens} | seed:{seed}")
         start_time = time.time()
 
         try:
@@ -46,7 +47,11 @@ class Method:
         finally:
             end_time = time.time()
             execution_time = end_time - start_time
-            
+            logging.info(f"")
+            logging.info(f"gen 0: {start_time}")
+            for key,value in self.evalPoints.items():
+                    logging.info(f"gen {key}: {value-start_time}")  
+
             if best_ind:
                 
                 if type(best_ind) is list:
@@ -181,7 +186,8 @@ class DE(Method):
         mutation=0.8,
         recombination=0.75,
         polish=True,
-        disp=True
+        disp=True,
+        evalPoints=None
     ):
         super().__init__()
         self.model = model
@@ -190,17 +196,22 @@ class DE(Method):
         self.mutation = mutation 
         self.recombination = recombination 
         self.polish = polish 
-        self.disp = disp 
+        self.disp = disp
+        self.evalPoints=dict.fromkeys(evalPoints) 
+
+    def callback(self,intermediate_result):
+        aux=intermediate_result.nit
+        if aux in self.evalPoints:
+            self.evalPoints[aux]=time.time()
+
     @staticmethod
     def objective_function_DE(params,solver,error,model):
             ind = Individual.list_to_ind(params,model)
             ind.calculate_fitness(error=error,solver=solver)
             return ind.fitness
 
-    def execute(self, logging, solver, error, seed, gens=5000, verbose=False,parallel=False):
-        workers_aux=1
-        if parallel:
-            workers_aux=-1
+    def execute(self, logging, solver, error, seed, gens=5000, verbose=False,parallel=1):
+        workers_aux=parallel
 
         args_aux=(solver,error,self.model)
         result = differential_evolution(
@@ -211,8 +222,9 @@ class DE(Method):
             maxiter=gens,
             popsize=15,
             mutation=0.8,
-            recombination=0.75,
-            seed=seed,
+            recombination=0.75
+            ,callback=self.callback
+            ,seed=seed,
             polish=True,
             disp=False
             ,updating='deferred'

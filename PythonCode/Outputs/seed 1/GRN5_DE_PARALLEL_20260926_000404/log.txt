@@ -1,0 +1,18 @@
+2026-09-26 00:04:04,514 | INFO | Starting execution - Serial
+2026-09-26 00:04:04,514 | INFO | Running with seed=1, solver=ODEINT, error=MSE
+2026-09-26 00:04:04,514 | INFO | Starting execution for DE: Solver=ODEINT, Error=MSE, Seed=1
+2026-09-26 00:04:04,514 | INFO | comeco de execucao26/09/2026 00:04:04
+2026-09-26 00:04:04,514 | INFO | numero de cores: 2 | numero de geracoes : 2048 | seed:1
+2026-09-26 00:38:15,601 | INFO | 
+2026-09-26 00:38:15,601 | INFO | gen 0: 1790391844.514989
+2026-09-26 00:38:15,601 | INFO | gen 32: 21.446338891983032
+2026-09-26 00:38:15,601 | INFO | gen 64: 52.411782026290894
+2026-09-26 00:38:15,601 | INFO | gen 128: 130.12761402130127
+2026-09-26 00:38:15,601 | INFO | gen 256: 279.7837677001953
+2026-09-26 00:38:15,601 | INFO | gen 512: 598.3624713420868
+2026-09-26 00:38:15,601 | INFO | gen 1024: 1145.3891112804413
+2026-09-26 00:38:15,602 | INFO | gen 2048: 2033.6562700271606
+2026-09-26 00:38:15,604 | INFO | Execution finished for solver: ODEINT, seed: 1, error: MSE in 2051.09 seconds.
+2026-09-26 00:38:15,606 | INFO | Results saved to ../../Outputs/GRN5_DE_PARALLEL_20260926_000404\results.csv
+2026-09-26 00:38:15,607 | INFO | Results saved to ../../Outputs/GRN5_DE_PARALLEL_20260926_000404\results.csv
+2026-09-26 00:38:15,607 | INFO | Execution finished in 2051.09 seconds.

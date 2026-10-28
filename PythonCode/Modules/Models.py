@@ -194,7 +194,37 @@ class ModelWrapper:
             
         return Model(coeffs=coeffs, bounds=bounds, system=ModelWrapper.system_grn5, labels=labels, datapath=datapath, name='GRN5', train_percentage=train_percentage, excluded_coeffs=excluded_coeffs,)
     
-    
+    @staticmethod
+    def system_grn10(t, y, ind, equation,labels):
+        vals = [Solvers.norm_hardcoded(val, ind.model.max_data[label]) for val, label in zip(y, labels)]
+        
+        dA = equation.full_eq(vals, 'A', 'J')
+        dB = equation.full_eq(vals, 'B', 'E')
+        dC = equation.complex_eqs(vals, 'C', [
+                    ['+B', '-F', '-A'], 
+                    ['-B', '+F', '-A'],
+                    ['-B', '-F', '+A'],
+                    ['+B', '-F', '+A'],
+                    ['-B', '+F', '+A'],
+                    ['+B', '+F', '+A'],
+        ])
+        dD = equation.full_eq(vals, 'D', 'F')
+        dE = equation.full_eq(vals, 'E', 'J')
+        dF = equation.full_eq(vals, 'F', 'A')
+        dG = equation.complex_eqs(vals, 'G', [
+                    ['+B', '-F', '-A'],
+                    ['-B', '+F', '-A'],
+                    ['-B', '-F', '+A'],
+                    ['+B', '-F', '+A'],
+                    ['-B', '+F', '+A'],
+                    ['+B', '+F', '+A'] 
+        ])
+        dH = equation.full_eq(vals, 'H', 'F')
+        dI = equation.complex_eqs(vals, 'I', [['+G', '+H']])
+        dJ = equation.full_eq(vals, 'J', 'I')
+
+        return [dA, dB, dC, dD, dE, dF, dG, dH, dI, dJ]
+
     @staticmethod
     def GRN10(train_percentage):
         labels = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
@@ -285,7 +315,7 @@ class ModelWrapper:
 
             return [dA, dB, dC, dD, dE, dF, dG, dH, dI, dJ]
 
-        return Model(coeffs=coeffs, bounds=bounds, system=system, labels=labels, datapath=datapath, name='GRN10', train_percentage=train_percentage)
+        return Model(coeffs=coeffs, bounds=bounds, system=ModelWrapper.system_grn10, labels=labels, datapath=datapath, name='GRN10', train_percentage=train_percentage)
 
 
     @staticmethod

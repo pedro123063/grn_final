@@ -1,0 +1,12 @@
+2026-10-15 01:44:15,332 | INFO | Starting execution - Serial
+2026-10-15 01:44:15,332 | INFO | Running with seed=2, solver=ODEINT, error=MSE
+2026-10-15 01:44:15,333 | INFO | Starting execution for DE: Solver=ODEINT, Error=MSE, Seed=2
+2026-10-15 01:44:15,333 | INFO | comeco de execucao15/10/2026 01:44:15
+2026-10-15 01:44:15,333 | INFO | numero de cores: 14 | numero de geracoes : 32 | seed:2
+2026-10-15 01:47:42,297 | INFO | 
+2026-10-15 01:47:42,297 | INFO | gen 0: 1792039455.333235
+2026-10-15 01:47:42,297 | INFO | gen 32: 105.26014399528503
+2026-10-15 01:47:42,318 | INFO | Execution finished for solver: ODEINT, seed: 2, error: MSE in 206.96 seconds.
+2026-10-15 01:47:42,320 | INFO | Results saved to ../../Outputs/GRN10_DE_PARALLEL_20261015_014415\results.csv
+2026-10-15 01:47:42,322 | INFO | Results saved to ../../Outputs/GRN10_DE_PARALLEL_20261015_014415\results.csv
+2026-10-15 01:47:42,322 | INFO | Execution finished in 206.99 seconds.

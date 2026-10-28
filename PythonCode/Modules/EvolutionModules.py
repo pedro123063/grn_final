@@ -47,7 +47,7 @@ class Individual:
     # def solve_ivp(self, solver='RK45'):
     #     return integrate.solve_ivp(self.model.system, self.model.t_span, self.model.initial_conditions, method=solver, t_eval=self.model.t_eval, args=(self, self.equation), min_step=0.001).y
     
-    def solve_ivp(self, test=False, solver='RK45'):
+    def solve_ivp(self, test=False, solver='RK45',info=False):
         if test:
             initial_conditions = self.model.test_initial_conditions
             t_eval = self.model.t_test
@@ -59,15 +59,25 @@ class Individual:
             t_span = self.model.t_span
         
         if solver.upper() == 'ODEINT':
-            #print("!1")
-            sol = odeint(
-                self.model.system,
-                initial_conditions,
-                t_eval,
-                args=(self, self.equation,self.model.labels),
-                tfirst=True,  # Important: tells odeint the function is (t, y) instead of (y, t)
-                hmin=0.001
-            )
+            if info==False:
+                sol = odeint(
+                    self.model.system,
+                    initial_conditions,
+                    t_eval,
+                    args=(self, self.equation,self.model.labels),
+                    tfirst=True,  # Important: tells odeint the function is (t, y) instead of (y, t)
+                    hmin=0.001
+                )
+            else:
+                sol,infoIntegration=odeint(
+                    self.model.system,
+                    initial_conditions,
+                    t_eval,
+                    args=(self, self.equation,self.model.labels),
+                    tfirst=True,  # Important: tells odeint the function is (t, y) instead of (y, t)
+                    hmin=0.001,
+                    full_output=True
+                )
             
             return sol.T
         else:

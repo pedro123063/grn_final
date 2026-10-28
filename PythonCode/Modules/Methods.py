@@ -29,7 +29,7 @@ class Method:
     def __init__(self):
         pass
 
-    def run(self, logging, filepath, gens=5000, seed=None, error='SQUARED', solver='RK45', verbose=False, plot_best_ind=False,parallel=1):
+    def run(self, logging, filepath, gens=5000, seed=None, error='SQUARED', solver='RK45', verbose=False, plot_best_ind=False,parallel=1,info=False):
         logging.info(f"Starting execution for {self.__class__.__name__}: Solver={solver}, Error={error}, Seed={seed}")
         
         logging.info(f"comeco de execucao{time.strftime("%d/%m/%Y %H:%M:%S")}")
@@ -37,7 +37,7 @@ class Method:
         start_time = time.time()
 
         try:
-            best_ind = self.execute(logging=logging, solver=solver, seed=seed, error=error, gens=gens, verbose=verbose,parallel=parallel)
+            best_ind = self.execute(logging=logging, solver=solver, seed=seed, error=error, gens=gens, verbose=verbose,parallel=parallel,info=info)
 
         except Exception as e:
             logging.error(f"Unexpected error: {e}", exc_info=True)
@@ -205,15 +205,15 @@ class DE(Method):
             self.evalPoints[aux]=time.time()
 
     @staticmethod
-    def objective_function_DE(params,solver,error,model):
+    def objective_function_DE(params,solver,error,model,info=False):
             ind = Individual.list_to_ind(params,model)
-            ind.calculate_fitness(error=error,solver=solver)
+            ind.calculate_fitness(error=error,solver=solver,info=False)
             return ind.fitness
 
-    def execute(self, logging, solver, error, seed, gens=5000, verbose=False,parallel=1):
+    def execute(self, logging, solver, error, seed, gens=5000, verbose=False,parallel=1,info=False):
         workers_aux=parallel
 
-        args_aux=(solver,error,self.model)
+        args_aux=(solver,error,self.model,info)
         result = differential_evolution(
             DE.objective_function_DE,
             self.model.bounds_list(),

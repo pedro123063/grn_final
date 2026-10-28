@@ -12,7 +12,7 @@ from Modules.Plotters import Plotter
 import traceback
 
 class ExecutionHandler:
-    def __init__(self, model, method_class, seeds, solvers, errors, generations, output_path=None, parallel=False,desired_gens=None, **kwargs):
+    def __init__(self, model, method_class, seeds, solvers, errors, generations, output_path=None, parallel=False,desired_gens=None,info=False, **kwargs):
         self.model = model
         self.method_cls = method_class  # Classe do método
         self.method_name = method_class.__name__.upper()
@@ -25,6 +25,7 @@ class ExecutionHandler:
         self.params = kwargs
         self.desired_gens=desired_gens
         self.kwargs = kwargs
+        self.info=info
     
     @property
     def run_path(self):
@@ -101,6 +102,7 @@ class ExecutionHandler:
                 solver=solver,
                 verbose=True
                 ,parallel=parallel
+                ,info=self.info
             )
             result.update({
                 'model': self.model.name,

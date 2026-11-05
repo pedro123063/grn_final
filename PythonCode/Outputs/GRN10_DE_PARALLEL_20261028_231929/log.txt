@@ -1,0 +1,104 @@
+2026-10-28 23:19:29,624 | INFO | Starting execution - Serial
+2026-10-28 23:19:29,624 | INFO | Running with seed=0, solver=ODEINT, error=MSE
+2026-10-28 23:19:29,626 | INFO | Starting execution for DE: Solver=ODEINT, Error=MSE, Seed=0
+2026-10-28 23:19:29,626 | INFO | comeco de execucao28/10/2026 23:19:29
+2026-10-28 23:19:29,626 | INFO | numero de cores: 1 | numero de geracoes : 32 | seed:0
+2026-10-28 23:19:29,631 | ERROR | Unexpected error: The map-like callable must be of the form f(func, iterable), returning a sequence of numbers the same length as 'iterable'
+Traceback (most recent call last):
+  File "c:\Users\Pedro\faculdade\IniciacaoCientifica\grn_final\grn_final\.grn\Lib\site-packages\scipy\optimize\_differentialevolution.py", line 1395, in _calculate_population_energies
+    calc_energies = list(
+        self._mapwrapper(self.func, parameters_pop[0:S])
+    )
+  File "c:\Users\Pedro\faculdade\IniciacaoCientifica\grn_final\grn_final\.grn\Lib\site-packages\scipy\_lib\_util.py", line 588, in __call__
+    return self.f(x, *self.args)
+           ~~~~~~^^^^^^^^^^^^^^^
+  File "c:\Users\Pedro\faculdade\IniciacaoCientifica\grn_final\grn_final\PythonCode\Modules\Methods.py", line 210, in objective_function_DE
+    ind.calculate_fitness(error=error,solver=solver,info=False)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Individual.calculate_fitness() got an unexpected keyword argument 'info'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "c:\Users\Pedro\faculdade\IniciacaoCientifica\grn_final\grn_final\PythonCode\Modules\Methods.py", line 40, in run
+    best_ind = self.execute(logging=logging, solver=solver, seed=seed, error=error, gens=gens, verbose=verbose,parallel=parallel,info=info)
+  File "c:\Users\Pedro\faculdade\IniciacaoCientifica\grn_final\grn_final\PythonCode\Modules\Methods.py", line 219, in execute
+    result = differential_evolution(
+        DE.objective_function_DE,
+    ...<12 lines>...
+        ,workers=workers_aux
+    )
+  File "c:\Users\Pedro\faculdade\IniciacaoCientifica\grn_final\grn_final\.grn\Lib\site-packages\scipy\_lib\_util.py", line 365, in wrapper
+    return fun(*args, **kwargs)
+  File "c:\Users\Pedro\faculdade\IniciacaoCientifica\grn_final\grn_final\.grn\Lib\site-packages\scipy\optimize\_differentialevolution.py", line 533, in differential_evolution
+    ret = solver.solve()
+  File "c:\Users\Pedro\faculdade\IniciacaoCientifica\grn_final\grn_final\.grn\Lib\site-packages\scipy\optimize\_differentialevolution.py", line 1219, in solve
+    self._calculate_population_energies(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.population[self.feasible]))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Pedro\faculdade\IniciacaoCientifica\grn_final\grn_final\.grn\Lib\site-packages\scipy\optimize\_differentialevolution.py", line 1402, in _calculate_population_energies
+    raise RuntimeError(
+    ...<2 lines>...
+    ) from e
+RuntimeError: The map-like callable must be of the form f(func, iterable), returning a sequence of numbers the same length as 'iterable'
+2026-10-28 23:19:29,633 | INFO | 
+2026-10-28 23:19:29,633 | INFO | gen 0: 1793240369.6265235
+2026-10-28 23:19:29,634 | ERROR | Error running seed=0, solver=ODEINT, error=MSE: unsupported operand type(s) for -: 'NoneType' and 'float', traceback=Traceback (most recent call last):
+  File "c:\Users\Pedro\faculdade\IniciacaoCientifica\grn_final\grn_final\.grn\Lib\site-packages\scipy\optimize\_differentialevolution.py", line 1395, in _calculate_population_energies
+    calc_energies = list(
+        self._mapwrapper(self.func, parameters_pop[0:S])
+    )
+  File "c:\Users\Pedro\faculdade\IniciacaoCientifica\grn_final\grn_final\.grn\Lib\site-packages\scipy\_lib\_util.py", line 588, in __call__
+    return self.f(x, *self.args)
+           ~~~~~~^^^^^^^^^^^^^^^
+  File "c:\Users\Pedro\faculdade\IniciacaoCientifica\grn_final\grn_final\PythonCode\Modules\Methods.py", line 210, in objective_function_DE
+    ind.calculate_fitness(error=error,solver=solver,info=False)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Individual.calculate_fitness() got an unexpected keyword argument 'info'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "c:\Users\Pedro\faculdade\IniciacaoCientifica\grn_final\grn_final\PythonCode\Modules\Methods.py", line 44, in run
+    raise e
+  File "c:\Users\Pedro\faculdade\IniciacaoCientifica\grn_final\grn_final\PythonCode\Modules\Methods.py", line 40, in run
+    best_ind = self.execute(logging=logging, solver=solver, seed=seed, error=error, gens=gens, verbose=verbose,parallel=parallel,info=info)
+  File "c:\Users\Pedro\faculdade\IniciacaoCientifica\grn_final\grn_final\PythonCode\Modules\Methods.py", line 219, in execute
+    result = differential_evolution(
+        DE.objective_function_DE,
+    ...<12 lines>...
+        ,workers=workers_aux
+    )
+  File "c:\Users\Pedro\faculdade\IniciacaoCientifica\grn_final\grn_final\.grn\Lib\site-packages\scipy\_lib\_util.py", line 365, in wrapper
+    return fun(*args, **kwargs)
+  File "c:\Users\Pedro\faculdade\IniciacaoCientifica\grn_final\grn_final\.grn\Lib\site-packages\scipy\optimize\_differentialevolution.py", line 533, in differential_evolution
+    ret = solver.solve()
+  File "c:\Users\Pedro\faculdade\IniciacaoCientifica\grn_final\grn_final\.grn\Lib\site-packages\scipy\optimize\_differentialevolution.py", line 1219, in solve
+    self._calculate_population_energies(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.population[self.feasible]))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Pedro\faculdade\IniciacaoCientifica\grn_final\grn_final\.grn\Lib\site-packages\scipy\optimize\_differentialevolution.py", line 1402, in _calculate_population_energies
+    raise RuntimeError(
+    ...<2 lines>...
+    ) from e
+RuntimeError: The map-like callable must be of the form f(func, iterable), returning a sequence of numbers the same length as 'iterable'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "c:\Users\Pedro\faculdade\IniciacaoCientifica\grn_final\grn_final\PythonCode\Modules\Handlers.py", line 101, in run_single
+    result = method.run(
+        logging=self.logger,
+    ...<7 lines>...
+        ,info=info
+    )
+  File "c:\Users\Pedro\faculdade\IniciacaoCientifica\grn_final\grn_final\PythonCode\Modules\Methods.py", line 53, in run
+    logging.info(f"gen {key}: {value-start_time}")
+                               ~~~~~^~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'NoneType' and 'float'
+
+2026-10-28 23:19:29,638 | INFO | Results saved to ../../Outputs/GRN10_DE_PARALLEL_20261028_231929\results.csv
+2026-10-28 23:19:29,640 | INFO | Results saved to ../../Outputs/GRN10_DE_PARALLEL_20261028_231929\results.csv
+2026-10-28 23:19:29,640 | INFO | Execution finished in 0.02 seconds.

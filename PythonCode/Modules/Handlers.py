@@ -1,5 +1,6 @@
 import os
 import time
+from datetime import datetime
 import logging
 import multiprocessing as mp
 from datetime import datetime
@@ -52,11 +53,19 @@ class ExecutionHandler:
         for seed in self.seeds:
             for solver in self.solvers:
                 for error in self.errors:
+                    
+                    hora = datetime.now().strftime("%H%M%S")
+                    nome_aux=f"{self.method_name}_{seed}_{solver}_{self.generations}_{hora}.csv"
+                    info=""
+                    if self.info:
+                        info=self.info+nome_aux
+                    else:
+                        info=False
                     self.logger.info(f"Running with seed={seed}, solver={solver}, error={error}")
                     print(f"Running with seed={seed}, solver={solver}, error={error}")
                     print(f"setando seed: {seed}")
                     np.random.seed(seed)
-                    result = self.run_single(seed, solver, error,parallel)
+                    result = self.run_single(seed, solver, error,parallel,info)
                     results.append(result)
                     self.save_results(results)
 
@@ -90,7 +99,7 @@ class ExecutionHandler:
         
         self.save_results(results)
 
-    def run_single(self, seed, solver, error,parallel):
+    def run_single(self, seed, solver, error,parallel,info=False):
         try:
             method = self.method_cls(model=self.model,evalPoints=self.desired_gens, **self.kwargs)
             result = method.run(
@@ -102,7 +111,7 @@ class ExecutionHandler:
                 solver=solver,
                 verbose=True
                 ,parallel=parallel
-                ,info=self.info
+                ,info=info
             )
             result.update({
                 'model': self.model.name,

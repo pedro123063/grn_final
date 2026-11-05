@@ -1,0 +1,2 @@
+model,method,parallel,run_id,seed,solver,error_type,ABS_Fitness,SQUARED_Fitness,MSE_Fitness,MABS_Fitness,execution_time
+GRN10,DE,1,GRN10_DE_PARALLEL_20261028_231929,0,ODEINT,MSE,,,,,

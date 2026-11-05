@@ -1,5 +1,6 @@
 import sys
 import os
+import time
 sys.path.append(os.path.abspath("../..")) 
 
 import random
@@ -69,6 +70,7 @@ class Individual:
                     hmin=0.001
                 )
             else:
+                t0 = time.perf_counter_ns()
                 sol,infoIntegration=odeint(
                     self.model.system,
                     initial_conditions,
@@ -78,7 +80,12 @@ class Individual:
                     hmin=0.001,
                     full_output=True
                 )
-            
+                t1 = time.perf_counter_ns()
+                tempo_s = (t1 - t0) / 1e9
+                nfe=infoIntegration["nfe"][-1]
+                nje=infoIntegration["nje"][-1]
+                nst=infoIntegration["nst"][-1]
+                info.write(f"{tempo_s},{nst},{nfe},{nje}\n")
             return sol.T
         else:
             #print("!2")
@@ -113,13 +120,13 @@ class Individual:
         return ind_list
         
     # model.original_train vira o argumento data   
-    def calculate_fitness(self, test=False, solver='RK45', error='SQUARED'):
+    def calculate_fitness(self, test=False, solver='RK45', error='SQUARED',info=False):
         if test:
             data = self.model.original_test
         else:
             data = self.model.original_train
         try:
-            y = self.solve_ivp(test=test, solver=solver)
+            y = self.solve_ivp(test=test, solver=solver,info=info)
             #print(f"\n\n y: {y} \n\n")
             self.fitness = Helper.calculate_error(data, y, error)
             #print(f"\n\n fitness:{self.fitness}  \n\n")

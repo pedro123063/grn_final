@@ -207,12 +207,14 @@ class DE(Method):
     @staticmethod
     def objective_function_DE(params,solver,error,model,info=False):
             ind = Individual.list_to_ind(params,model)
-            ind.calculate_fitness(error=error,solver=solver,info=False)
+            ind.calculate_fitness(error=error,solver=solver,info=info)
             return ind.fitness
 
     def execute(self, logging, solver, error, seed, gens=5000, verbose=False,parallel=1,info=False):
         workers_aux=parallel
-
+        if info and parallel==1:
+            info=open(info,"w",newline="")
+            info.write("tempo_de_integracao,numero_total_de_passos_realizados_nst,numero_de_avaliacoes_funcao_nfe,numero_avaliacoes_jacobiana_nje\n")
         args_aux=(solver,error,self.model,info)
         result = differential_evolution(
             DE.objective_function_DE,
@@ -225,12 +227,14 @@ class DE(Method):
             recombination=0.75
             ,callback=self.callback
             ,seed=seed,
-            polish=True,
+            polish=False,
             disp=False
             ,updating='deferred'
             ,workers=workers_aux
         )
-        
+        if info and parallel==1:
+            info.close()
+
         return Individual.list_to_ind(result.x, self.model)
     
 # Método DE Adaptativo

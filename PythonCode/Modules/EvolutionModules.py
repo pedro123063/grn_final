@@ -126,7 +126,7 @@ class Individual:
         else:
             data = self.model.original_train
         try:
-            y = self.solve_ivp(test=test, solver=solver,info=info)
+            y = self.solve_ivp(test=test, solver=solver,info=info )
             #print(f"\n\n y: {y} \n\n")
             self.fitness = Helper.calculate_error(data, y, error)
             #print(f"\n\n fitness:{self.fitness}  \n\n")

@@ -1,0 +1,37 @@
+{
+  "run_id": "GRN5_DE_16cores_20261113_115626",
+  "model": "GRN5",
+  "train_percentage": 0.7,
+  "method": "DE",
+  "method_params": {
+    "tol": "0",
+    "atol": "0"
+  },
+  "n_cores": 16,
+  "seeds": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "solvers": [
+    "ODEINT"
+  ],
+  "errors": [
+    "MSE"
+  ],
+  "generations": 40000,
+  "n_checkpoints": 1001,
+  "hostname": "venus",
+  "cpu_model": "12th Gen Intel(R) Core(TM) i7-12700KF",
+  "cpu_count_logical": 20,
+  "python": "3.14.3",
+  "numpy": "2.5.4",
+  "scipy": "1.18.1",
+  "thread_env": {
+    "OMP_NUM_THREADS": null,
+    "MKL_NUM_THREADS": null,
+    "OPENBLAS_NUM_THREADS": null
+  },
+  "started_at": "2026-11-13T11:56:26"
+}

@@ -1,0 +1,21 @@
+{
+  "model": "GRN10",
+  "train_percentage": 0.7,
+  "method_class": "DE",
+  "seeds": [
+    0
+  ],
+  "n_cores": [
+    1,2,3,4
+  ],
+  "max_gen": 4,
+  "interval_evaluation": 8,
+  "solvers": [
+    "ODEINT"
+  ],
+  "errors": [
+    "MSE"
+  ],
+  "info": false,
+  "NExec": 1
+}

@@ -56,11 +56,8 @@ class ExecutionHandler:
                     
                     hora = datetime.now().strftime("%H%M%S")
                     nome_aux=f"{self.method_name}_{seed}_{solver}_{self.generations}_{hora}.csv"
-                    info=""
-                    if self.info:
-                        info=self.info+nome_aux
-                    else:
-                        info=False
+                    info = os.path.join(self.run_path, nome_aux) if self.info else False
+                    
                     self.logger.info(f"Running with seed={seed}, solver={solver}, error={error}")
                     print(f"Running with seed={seed}, solver={solver}, error={error}")
                     print(f"setando seed: {seed}")
@@ -147,7 +144,7 @@ class ExecutionHandler:
 
     def execute(self):
         
-        self.run_id = f"{self.model.name}_{self.method_name}_{'PARALLEL' if self.parallel else 'SERIAL'}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        self.run_id = f"{self.model.name}_{self.method_name}_{self.seeds[0]}seed_{self.parallel}cores_{datetime.now().strftime('%d%m%Y_%H%M%S')}"
         self.logger = self.setup_logger()
         
         print(f"Starting execution with ID: {self.run_id}")
@@ -168,7 +165,9 @@ class ExecutionHandler:
         
         data = pd.read_csv(f"{self.run_path}/results.csv")
         Plotter.plot_comparative_boxplots(data, filepath=self.run_path, filetype='png', name='boxplot_comparison')
-    
+        for log_handler in self.logger.handlers[:]:
+            log_handler.close()
+            self.logger.removeHandler(log_handler)    
     
     
     def __repr__(self):

@@ -1,0 +1,13 @@
+2026-11-25 22:46:54,721 | INFO | Starting execution - Serial
+2026-11-25 22:46:54,721 | INFO | Running with seed=0, solver=ODEINT, error=MSE
+2026-11-25 22:46:54,721 | INFO | Starting execution for DE: Solver=ODEINT, Error=MSE, Seed=0
+2026-11-25 22:46:54,721 | INFO | comeco de execucao25/11/2026 22:46:54
+2026-11-25 22:46:54,721 | INFO | numero de cores: 4 | numero de geracoes : 4 | seed:0
+2026-11-25 22:47:06,618 | INFO | 
+2026-11-25 22:47:06,618 | INFO | gen 0: 1795657614.7219672
+2026-11-25 22:47:06,618 | INFO | gen 1: 5.498192310333252
+2026-11-25 22:47:06,618 | INFO | gen 4: 11.86920952796936
+2026-11-25 22:47:06,637 | INFO | Execution finished for solver: ODEINT, seed: 0, error: MSE in 11.90 seconds.
+2026-11-25 22:47:06,638 | INFO | Results saved to c:\Users\Pedro\faculdade\IniciacaoCientifica\grn_final\grn_final\PythonCode\Outputs\nome_do_config\GRN10_DE_0seed_4cores_25112026_224654\results.csv
+2026-11-25 22:47:06,640 | INFO | Results saved to c:\Users\Pedro\faculdade\IniciacaoCientifica\grn_final\grn_final\PythonCode\Outputs\nome_do_config\GRN10_DE_0seed_4cores_25112026_224654\results.csv
+2026-11-25 22:47:06,640 | INFO | Execution finished in 11.92 seconds.

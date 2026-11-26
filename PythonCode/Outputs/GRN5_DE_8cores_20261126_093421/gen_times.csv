@@ -1,0 +1,2 @@
+run_id,model,method,n_cores,seed,solver,error_type,gen,elapsed_s,best_fitness,nfev
+GRN5_DE_8cores_20261126_093421,GRN5,DE,8,0,ODEINT,MSE,1,1.0595216450001317,0.24475976392216645,570

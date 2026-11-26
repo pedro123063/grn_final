@@ -58,24 +58,42 @@ class Individual:
             initial_conditions = self.model.initial_conditions
             t_eval = self.model.t_eval
             t_span = self.model.t_span
-        
+
+        # Escolha do RHS passado ao integrador:
+        #  - Caminho rápido: se o modelo define fast_system (hoje só o GRN5,
+        #    ver ModelWrapper.system_grn5_fast em Models.py), os coeficientes
+        #    do indivíduo são extraídos UMA vez por integração por
+        #    model.pack_params(self) e o RHS recebe apenas essa tupla.
+        #    Isso evita, a cada chamada do RHS, lookups em dicionários e
+        #    chamadas de método, e evita o deepcopy de self.equation.
+        #  - Caminho original: model.system(t, y, ind, equation, labels).
+        #    Usado pelos demais modelos ou quando model.fast_system = None
+        #    (flag use_fast=False no notebook).
+        # Os dois caminhos dão o mesmo resultado (diferenças só de arredondamento).
+        if getattr(self.model, 'fast_system', None) is not None:
+            rhs = self.model.fast_system
+            rhs_args = (self.model.pack_params(self),)
+        else:
+            rhs = self.model.system
+            rhs_args = (self, self.equation, self.model.labels)
+
         if solver.upper() == 'ODEINT':
             if info==False:
                 sol = odeint(
-                    self.model.system,
+                    rhs,
                     initial_conditions,
                     t_eval,
-                    args=(self, self.equation,self.model.labels),
+                    args=rhs_args,
                     tfirst=True,  # Important: tells odeint the function is (t, y) instead of (y, t)
                     hmin=0.001
                 )
             else:
                 t0 = time.perf_counter_ns()
                 sol,infoIntegration=odeint(
-                    self.model.system,
+                    rhs,
                     initial_conditions,
                     t_eval,
-                    args=(self, self.equation,self.model.labels),
+                    args=rhs_args,
                     tfirst=True,  # Important: tells odeint the function is (t, y) instead of (y, t)
                     hmin=0.001,
                     full_output=True
@@ -90,12 +108,12 @@ class Individual:
         else:
             #print("!2")
             return integrate.solve_ivp(
-                self.model.system,
+                rhs,
                 t_span,
                 initial_conditions,
                 method=solver,
                 t_eval=t_eval,
-                args=(self, self.equation,self.model.labels),
+                args=rhs_args,
                 min_step=0.001
             ).y
     

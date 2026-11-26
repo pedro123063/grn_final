@@ -10,6 +10,8 @@ from scipy.integrate import odeint
 from scipy.integrate import solve_ivp
 import math
 import time
+import json
+from datetime import datetime
 import pandas as pd
 
 from deap import base, creator, tools, benchmarks
@@ -26,69 +28,115 @@ from scipy.optimize import differential_evolution
 
 
 class Method:
-    def __init__(self):
-        pass
+    """Classe base. Subclasses implementam execute() e, opcionalmente,
+    chamam record_checkpoint() nas gerações de interesse e preenchem
+    self.opt_info com estatísticas do otimizador (nit, nfev, ...)."""
 
-    def run(self, logging, filepath, gens=5000, seed=None, error='SQUARED', solver='RK45', verbose=False, plot_best_ind=False,parallel=1,info=False):
+    def __init__(self):
+        self.evalPoints = set()
+        self.trace = []
+        self.opt_info = {}
+        self._trace_writer = None
+        self._logger = None
+        self._t0 = None
+
+    def set_checkpoints(self, gens):
+        """Gerações em que o tempo decorrido e o melhor fitness são registrados."""
+        self.evalPoints = set(int(g) for g in gens) if gens else set()
+
+    def record_checkpoint(self, gen, best_fitness, nfev=None):
+        row = {
+            'gen': int(gen),
+            'elapsed_s': time.perf_counter() - self._t0,
+            'best_fitness': float(best_fitness),
+            'nfev': None if nfev is None else int(nfev),
+        }
+        self.trace.append(row)
+        if self._trace_writer is not None:
+            self._trace_writer(row)   # grava na hora: sobrevive a falhas posteriores
+        if self._logger is not None:
+            self._logger.info(f"gen {row['gen']}: {row['elapsed_s']:.3f}s | best={row['best_fitness']:.6g} | nfev={row['nfev']}")
+
+    def run(self, logging, filepath, gens=5000, seed=None, error='SQUARED', solver='RK45', verbose=False,
+            plot_best_ind=False, parallel=1, info=False, trace_writer=None):
         logging.info(f"Starting execution for {self.__class__.__name__}: Solver={solver}, Error={error}, Seed={seed}")
-        
-        logging.info(f"comeco de execucao{time.strftime("%d/%m/%Y %H:%M:%S")}")
         logging.info(f"numero de cores: {parallel} | numero de geracoes : {gens} | seed:{seed}")
-        start_time = time.time()
+
+        self.trace = []
+        self.opt_info = {}
+        self._trace_writer = trace_writer
+        self._logger = logging
+
+        status, error_msg = 'ok', None
+        best_ind = None
+        started_at = datetime.now().isoformat(timespec='seconds')
+        self._t0 = time.perf_counter()
 
         try:
-            best_ind = self.execute(logging=logging, solver=solver, seed=seed, error=error, gens=gens, verbose=verbose,parallel=parallel,info=info)
-
+            best_ind = self.execute(logging=logging, solver=solver, seed=seed, error=error, gens=gens,
+                                    verbose=verbose, parallel=parallel, info=info)
         except Exception as e:
-            logging.error(f"Unexpected error: {e}", exc_info=True)
-            raise e
-            # Se o melhor indivíduo não existir, salvar valores nulos
-            
-        finally:
-            end_time = time.time()
-            execution_time = end_time - start_time
-            logging.info(f"")
-            logging.info(f"gen 0: {start_time}")
-            for key,value in self.evalPoints.items():
-                    logging.info(f"gen {key}: {value-start_time}")  
+            status, error_msg = 'failed', f"{type(e).__name__}: {e}"
+            logging.error(f"Unexpected error during optimization: {e}", exc_info=True)
 
-            if best_ind:
-                
-                if type(best_ind) is list:
+        time_optimization = time.perf_counter() - self._t0
+
+        errors_result = {'ABS': None, 'SQUARED': None, 'MSE': None, 'MABS': None}
+        params = None
+        time_final_eval = None
+        if best_ind is not None:
+            try:
+                if isinstance(best_ind, (list, np.ndarray)):
                     best_ind = Individual.list_to_ind(best_ind, model=self.model)
-                
-                if self.model.train_percentage < 1.0:
-                    print("calculando fitness baseado no teste")
-                    errors_result = best_ind.calc_all_fitness(test=True, solver=solver)
-                else:
-                    errors_result = best_ind.calc_all_fitness(test=False, solver=solver)
-            else: 
-                errors_result = {
-                    'ABS': None, 
-                    'SQUARED': None, 
-                    'MSE': None, 
-                    'MABS': None
-                }
+                params = [float(v) for v in best_ind.ind_to_list()]
+                t1 = time.perf_counter()
+                test = self.model.train_percentage < 1.0
+                errors_result = best_ind.calc_all_fitness(test=test, solver=solver)
+                time_final_eval = time.perf_counter() - t1
+            except Exception as e:
+                status, error_msg = 'failed_final_eval', f"{type(e).__name__}: {e}"
+                logging.error(f"Error evaluating best individual: {e}", exc_info=True)
 
-            # adicionar parâmetro que mostra a % de treino
-            result_data = {
-                'best_ind': best_ind if best_ind else None,
-                'error_type': error,
-                'solver': solver,
-                'seed': seed,
-                'ABS_Fitness': errors_result['ABS'],
-                'SQUARED_Fitness': errors_result['SQUARED'],
-                'MSE_Fitness': errors_result['MSE'],
-                'MABS_Fitness': errors_result['MABS'],
-                'execution_time': execution_time,
-            }
+        execution_time = time.perf_counter() - self._t0
+        nit = self.opt_info.get('nit')
+        nfev = self.opt_info.get('nfev')
 
-            logging.info(f"Execution finished for solver: {solver}, seed: {seed}, error: {error} in {execution_time:.2f} seconds.")
-            
-            if  plot_best_ind:
-                Plotter.plot_ind(best_ind, filepath=filepath, name=f"{self.model.name}")
-            
-            return result_data
+        result_data = {
+            'status': status,
+            'error_msg': error_msg,
+            'started_at': started_at,
+            'n_cores': parallel,
+            'seed': seed,
+            'solver': solver,
+            'error_type': error,
+            'gens_requested': gens,
+            'nit': nit,
+            'nfev': nfev,
+            'converged': self.opt_info.get('converged'),
+            'stop_message': self.opt_info.get('message'),
+            # métricas de desempenho
+            'time_optimization_s': time_optimization,
+            'time_final_eval_s': time_final_eval,
+            'execution_time': execution_time,
+            'time_per_gen_s': time_optimization / nit if nit else None,
+            'time_per_eval_s': time_optimization / nfev if nfev else None,
+            'evals_per_s': nfev / time_optimization if nfev else None,
+            # qualidade da solução
+            'best_train_fitness': self.opt_info.get('best_fitness'),
+            'ABS_Fitness': errors_result['ABS'],
+            'SQUARED_Fitness': errors_result['SQUARED'],
+            'MSE_Fitness': errors_result['MSE'],
+            'MABS_Fitness': errors_result['MABS'],
+            'params': json.dumps(params) if params is not None else None,
+        }
+
+        logging.info(f"Execution finished ({status}) for solver: {solver}, seed: {seed}, error: {error}, cores: {parallel} "
+                     f"in {execution_time:.2f} s | nit={nit} nfev={nfev}")
+
+        if plot_best_ind and best_ind is not None:
+            Plotter.plot_ind(best_ind, filepath=filepath, name=f"{self.model.name}")
+
+        return result_data
 
 
     
@@ -187,22 +235,30 @@ class DE(Method):
         recombination=0.75,
         polish=True,
         disp=True,
-        evalPoints=None
+        evalPoints=None,
+        tol=0.01,
+        atol=0.0
     ):
         super().__init__()
         self.model = model
-        self.strategy = strategy 
-        self.popsize = popsize 
-        self.mutation = mutation 
-        self.recombination = recombination 
-        self.polish = polish 
+        self.strategy = strategy
+        self.popsize = popsize
+        self.mutation = mutation
+        self.recombination = recombination
+        self.polish = polish
         self.disp = disp
-        self.evalPoints=dict.fromkeys(evalPoints) 
+        # tol=0 e atol=0 desligam a parada por convergência: todas as execuções
+        # rodam exatamente 'gens' gerações (necessário para comparar nº de cores).
+        self.tol = tol
+        self.atol = atol
+        self.set_checkpoints(evalPoints)
 
-    def callback(self,intermediate_result):
-        aux=intermediate_result.nit
-        if aux in self.evalPoints:
-            self.evalPoints[aux]=time.time()
+    def callback(self, intermediate_result):
+        # o nome do parâmetro precisa ser 'intermediate_result' para o SciPy
+        # passar o OptimizeResult completo (nit, nfev, fun, ...)
+        r = intermediate_result
+        if r.nit in self.evalPoints:
+            self.record_checkpoint(r.nit, r.fun, r.nfev)
 
     @staticmethod
     def objective_function_DE(params,solver,error,model,info=False):
@@ -231,9 +287,19 @@ class DE(Method):
             disp=False
             ,updating='deferred'
             ,workers=workers_aux
+            ,tol=self.tol
+            ,atol=self.atol
         )
         if info and parallel==1:
             info.close()
+
+        self.opt_info = {
+            'nit': int(result.nit),
+            'nfev': int(result.nfev),
+            'converged': bool(result.success),
+            'message': str(result.message),
+            'best_fitness': float(result.fun),
+        }
 
         return Individual.list_to_ind(result.x, self.model)
     

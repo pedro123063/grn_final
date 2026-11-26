@@ -1,0 +1,10 @@
+2026-11-26 18:44:10,249 | INFO | Starting execution - cores=1
+2026-11-26 18:44:10,249 | INFO | Running with seed=0, solver=ODEINT, error=MSE, cores=1
+2026-11-26 18:44:10,249 | INFO | Starting execution for DE: Solver=ODEINT, Error=MSE, Seed=0
+2026-11-26 18:44:10,249 | INFO | numero de cores: 1 | numero de geracoes : 10 | seed:0
+2026-11-26 18:44:11,468 | INFO | gen 1: 1.219s | best=0.24476 | nfev=570
+2026-11-26 18:44:18,383 | INFO | gen 10: 8.133s | best=0.098943 | nfev=3135
+2026-11-26 18:44:18,387 | INFO | Execution finished (ok) for solver: ODEINT, seed: 0, error: MSE, cores: 1 in 8.14 s | nit=10 nfev=3135
+2026-11-26 18:44:18,388 | INFO | Results saved to ../../Outputs/GRN5_DE_1cores_20261126_184410/results.csv
+2026-11-26 18:44:18,389 | INFO | Results saved to ../../Outputs/GRN5_DE_1cores_20261126_184410/results.csv
+2026-11-26 18:44:18,389 | INFO | Execution finished in 8.14 seconds.

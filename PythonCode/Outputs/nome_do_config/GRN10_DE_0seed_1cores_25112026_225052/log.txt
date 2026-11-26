@@ -1,0 +1,5 @@
+2026-11-25 22:50:52,037 | INFO | Starting execution - Serial
+2026-11-25 22:50:52,037 | INFO | Running with seed=0, solver=ODEINT, error=MSE
+2026-11-25 22:50:52,037 | INFO | Starting execution for DE: Solver=ODEINT, Error=MSE, Seed=0
+2026-11-25 22:50:52,037 | INFO | comeco de execucao25/11/2026 22:50:52
+2026-11-25 22:50:52,037 | INFO | numero de cores: 1 | numero de geracoes : 4 | seed:0
